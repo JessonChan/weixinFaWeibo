@@ -22,7 +22,7 @@ func (this *WeiboController) Get() {
 
 	if weixinName != "" {
 		this.SetSession("weixinName", weixinName)
-		this.Ctx.WriteString("<a href=https://api.weibo.com/oauth2/authorize?client_id=3886642867&response_type=code&redirect_uri=http://106.3.46.54/weibo>点击</a>")
+		this.Ctx.WriteString("<a href=https://api.weibo.com/oauth2/authorize?client_id=1917201163&response_type=code&redirect_uri=http://106.3.46.54/weibo>点击</a>")
 	}
 
 	if code != "" {
@@ -44,8 +44,8 @@ func (this *WeiboController) Get() {
 }
 func getAccessToken(code string) string {
 	urlValues := make(url.Values)
-	urlValues.Set("client_id", "3886642867")
-	urlValues.Set("client_secret", "e8a00698b4b4e672944e02df2ff17ce2")
+	urlValues.Set("client_id", "1917201163")
+	urlValues.Set("client_secret", "b271c66875dc6c0e4d076a0c017189fd")
 	urlValues.Set("grant_type", "authorization_code")
 	urlValues.Set("code", code)
 	urlValues.Set("redirect_uri", "http://106.3.46.54/weibo")
