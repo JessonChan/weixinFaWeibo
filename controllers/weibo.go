@@ -22,7 +22,8 @@ func (this *WeiboController) Get() {
 
 	if weixinName != "" {
 		this.SetSession("weixinName", weixinName)
-		this.Ctx.WriteString("<a href=https://api.weibo.com/oauth2/authorize?client_id=1917201163&response_type=code&redirect_uri=http://106.3.46.54/weibo>点击</a>")
+		this.Data["url"] = "https://api.weibo.com/oauth2/authorize?client_id=1917201163&response_type=code&redirect_uri=http://106.3.46.54/weibo"
+		this.Data["data"] = "点击这里 绑定"
 	}
 
 	if code != "" {
@@ -38,8 +39,9 @@ func (this *WeiboController) Get() {
 		if e != nil {
 			println(e.Error())
 		}
-		this.Ctx.WriteString("ok")
+		this.Data["tips"] = "绑定成功,返回后直接给他发信息就能自动发到微博了，目前只支持发文本的消息"
 	}
+	this.TplNames = "weibo.tpl"
 
 }
 func getAccessToken(code string) string {

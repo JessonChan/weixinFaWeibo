@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"../models"
+	"encoding/json"
 	"encoding/xml"
 	"github.com/astaxie/beego"
 	"io/ioutil"
@@ -55,24 +56,35 @@ func responseText(textMsg *models.TextMsg) (textResponse *models.TextResponse) {
 
 	msg := textMsg.Content
 	isSuccess := false
-	if strings.HasPrefix(msg, "#") {
-		isSuccess = faweibo(textMsg.FromUserName, msg[1:])
+	if !strings.HasPrefix(msg, "##") {
+		_, isSuccess = faweibo(textMsg.FromUserName, msg)
 	}
 	if !isSuccess {
 		textResponse.Content = "hi,请点击下面的链接来绑定账号 http://106.3.46.54/weibo?weixinName=" + textMsg.FromUserName
-	}else{
-		textResponse.Content="send ok"
+	} else {
+		textResponse.Content = "发送成功"
 	}
 	return textResponse
 }
 
-func faweibo(name, content string) bool {
+func faweibo(name, content string) (response *models.WeiboResponse, isSuccess bool) {
 	urlValues := make(url.Values)
 	urlValues.Set("access_token", models.GetToken(name))
 	urlValues.Set("status", content)
-	_, err := http.Post("https://api.weibo.com/2/statuses/update.json", "application/x-www-form-urlencoded", strings.NewReader(urlValues.Encode()))
+	r, err := http.Post("https://api.weibo.com/2/statuses/update.json", "application/x-www-form-urlencoded", strings.NewReader(urlValues.Encode()))
+
 	if err != nil {
-		return false
+		return response, false
 	}
-	return true
+	body, _ := ioutil.ReadAll(r.Body)
+	response = &models.WeiboResponse{}
+	err = json.Unmarshal(body, response)
+	if err != nil {
+		println(err.Error())
+		return response, false
+	}
+	if strings.Contains(string(body), "created_at") {
+		return response, true
+	}
+	return response, false
 }
