@@ -60,3 +60,4 @@ func getAccessToken(code string) string {
 	token := a.Access_token
 	return token
 }
+

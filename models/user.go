@@ -18,6 +18,11 @@ type AccessToken struct {
 }
 
 func InsertUser(u *User) error {
+	u1:=GetUser(u.WeixinUserName)
+    if u!=nil{
+		u.Id=u1.Id
+	}
+
 	db := GetDB()
 	return db.Save(u)
 }
